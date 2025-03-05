@@ -1,7 +1,8 @@
 # 🚀 Bienvenue dans l'univers **DevSecOps sur Kubernetes** 🛡️☸️
 
 
-![image](https://github.com/user-attachments/assets/7f690789-8205-42d3-93f9-d717d305d243)
+![image](https://github.com/user-attachments/assets/5e478b0a-d82f-42c6-acc9-7c6ebc54adb0)
+
 
 
 
