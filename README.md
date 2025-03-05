@@ -1,27 +1,7 @@
 # 🚀 Bienvenue dans l'univers **DevSecOps sur Kubernetes** 🛡️☸️
 
-
-
-
-
 ![image](https://github.com/user-attachments/assets/df8ccf28-7302-49e3-91a0-dd279cffb681)
 
-
-
-# Kube_freaks
-This guide is intended to help you setup quickly a Kubernetes cluster.
-
-**Description of the cluster**
-OS: Ubuntu 22.04
-Master node: 1
-Workers nodes: 3
-Num of CPU: 2
-RAM: 2GB per machine
-Disk: 100 GB per machine
-Kubernetes version: 1.31
-
-## Kubernetes pre-setup
-Before creating the cluster be sure to use the script ....
 
 # 🚀 Plugins et Outils Populaires pour un Cluster Kubernetes  
 
