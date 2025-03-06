@@ -14,7 +14,7 @@ ETC_HOSTS="/etc/hosts"
 BACKUP_HOSTS="/etc/hosts.bak"
 
 # The new hosts file with all the IP addresses of the cluster
-NEW_HOSTS="hosts"
+NEW_HOSTS="./hosts"
 
 # Packages update
 echo -e "${GREEN}[+] Packages update ${NC}"
@@ -37,6 +37,11 @@ sudo cp $ETC_HOSTS $BACKUP_HOSTS
 # Cleaning the content of the original hosts file and 
 echo -e "${YELLOW}[+] Creating a backup file for the hosts file ${NC}"
 sudo mv $NEW_HOSTS $ETC_HOSTS
+
+# Turn the swap off even at startup
+echo -e "${YELLOW}[+] Trn the swap off even at reboot ${NC}"
+sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+sudo swapoff -a 
 
 # Installing the container runtime and enable it at startup
 echo -e "${GREEN}[+] Container runtime setup (containerd) ${NC}"
