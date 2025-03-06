@@ -17,56 +17,60 @@ BACKUP_HOSTS="/etc/hosts.bak"
 NEW_HOSTS="./hosts"
 
 # Packages update
-echo -e "${GREEN}[+] Packages update ${NC}"
+echo "${GREEN}[+] Packages update ${NC}"
 sudo apt-get update
 
 # Packages upgrade
-echo -e "${GREEN}[+] Packages upgrade ${NC}"
+echo "${GREEN}[+] Packages upgrade ${NC}"
 sudo apt-get upgrade
 
 # Changing the hostname to fit the needs 
-echo -e "${GREEN}[+] Hostname changing ${NC}"
+echo "${GREEN}[+] Hostname changing ${NC}"
 read -p "Modify the hostname(default=master) : " new_hostname
 new_hostname=${new_hostname:-master}
 sudo hostnamectl set-hostname $new_hostname
 
 # First let's backup the /etc/hosts file
-echo -e "${GREEN}[+] Creating a backup file for the hosts file ${NC}"
+echo "${GREEN}[+] Creating a backup file for the hosts file ${NC}"
 sudo cp $ETC_HOSTS $BACKUP_HOSTS
 
 # Cleaning the content of the original hosts file and 
-echo -e "${YELLOW}[+] Creating a backup file for the hosts file ${NC}"
+echo "${YELLOW}[+] Making changes to the hosts file ${NC}"
 sudo mv $NEW_HOSTS $ETC_HOSTS
 
 # Turn the swap off even at startup
-echo -e "${YELLOW}[+] Trn the swap off even at reboot ${NC}"
+echo "${YELLOW}[+] Turn the swap off even at reboot ${NC}"
 sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 sudo swapoff -a 
 
 # Installing the container runtime and enable it at startup
-echo -e "${GREEN}[+] Container runtime setup (containerd) ${NC}"
+echo "${GREEN}[+] Container runtime setup (containerd) ${NC}"
 sudo apt-get install containerd
 sudo systemctl enable containerd
 
 # Charging modules for containerd
-echo -e "${GREEN}[+] Setting up the modules for containerd ${NC}"
+echo "${GREEN}[+] Setting up the modules for containerd ${NC}"
 echo "overlay \nbr_netfilter" | sudo tee /etc/modules-load.d/containerd.conf > /dev/null
 sudo modprobe overlay
 sudo modprobe br_netfilter
 
 # Starting the container runtime
-echo -e "${YELLOW}[+] Starting the CRI ${NC}"
+echo "${YELLOW}[+] Starting the CRI ${NC}"
 sudo systemctl start containerd
 
 # Setting systemd cgroup drivers
-echo -e "${GREEN}[+] Systemd Cgroup drivers setup ${NC}"
+echo "${GREEN}[+] Systemd Cgroup drivers setup ${NC}"
 sudo mkdir /etc/containerd
 sudo containerd config default > config.toml
 sudo mv config.toml /etc/containerd/config.toml
 sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
 
+# Changing the executable path of containerd
+echo "${GREEN}[+] Indicate the executable file of containerd ${NC}"
+sudo sed -i 's/ExecStart=usr/local/bin/containerd/ExecStart=usr/bin/containerd /' /etc/systemd/system/containerd.service
+
 # Install the CNI plugin for containerd nertwork purpose
-echo -e "${GREEN}[+] Running containerd setup ${NC}"
+echo "${GREEN}[+] Running containerd setup ${NC}"
 sudo apt-get install curl
 wget https://github.com/containernetworking/plugins/releases/download/v1.1.1/cni-plugins-linux-amd64-v1.1.1.tgz
 mkdir -p /opt/cni/bin  
@@ -76,24 +80,33 @@ sudo systemctl daemon-reload
 sudo systemctl restart containerd
 
 # Enable IPv4 packet forwarding
-echo -e "${YELLOW}[+] Enabling IPv4 packet forwarding  ${NC}"
+echo "${YELLOW}[+] Enabling IPv4 packet forwarding  ${NC}"
 echo "net.ipv4.ip_forward = 1 \nnet.bridge.bridge-nf-call-iptables = 1" | sudo tee /etc/sysctl.d/k8s.conf > /dev/null
-echo -e "${YELLOW}[+] Applying the changes to the system  ${NC}"
+echo "${YELLOW}[+] Applying the changes to the system  ${NC}"
 sudo sysctl --system
 
 # Installing the kube tools - kubelet kubeadm kubectl
-echo -e "${GREEN}[+] Dependencies setup  ${NC}"
+echo "${GREEN}[+] Dependencies setup  ${NC}"
 sudo apt-get install apt-transport-https ca-certificates curl gpg
 
-echo -e "${YELLOW}[+] Adding keyrings ${NC}"
+echo "${YELLOW}[+] Adding keyrings ${NC}"
 [ -d /etc/apt/keyrings ] || sudo mkdir -p -m 755 /etc/apt/keyrings
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
-echo -e "${YELLOW}[+] Adding the Kubernetes apt repository ${NC}"
+echo "${YELLOW}[+] Adding the Kubernetes apt repository ${NC}"
 echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
-echo -e "${GREEN}[+] Installing Kubernetes tools and enabling kubelet ${NC}"
+echo "${GREEN}[+] Installing Kubernetes tools and enabling kubelet ${NC}"
 sudo apt-get update
 sudo apt-get install kubeadm kubelet kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 sudo systemctl enable --now kubelet
+
+echo "${GREEN}[+] Adding firewall rules ${NC}"
+sudo ufw allow 2379/tcp
+sudo ufw allow 2380/tcp
+sudo ufw allow 8080/tcp
+sudo ufw allow 6443/tcp
+sudo ufw allow 10250/tcp
+sudo ufw allow 10257/tcp
+sudo ufw allow 10259/tcp
