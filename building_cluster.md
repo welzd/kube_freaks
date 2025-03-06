@@ -26,7 +26,7 @@ sh kube_prerequisities.sh
 ```
 Good things are starting from here
 
-#### On the master node
+### On the master node
 **Create the cluster**
 ```bash
 sudo kubeadm init --pod-network-cidr=192.168.0.0/16
