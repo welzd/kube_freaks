@@ -3,12 +3,12 @@ This guide is intended to help you setup quickly a Kubernetes cluster.
 
 **Description of the cluster**
 - OS: Ubuntu 22.04
--  Master node: 1
--  Workers nodes: 3
+- Master node: 1
+- Workers nodes: 3
 - Num of CPU: 2
-- RAM: 2GB per machine
-- Disk: 100 GB per machine
-= Kubernetes version: 1.31
+- RAM: 2GB(min) per machine
+- Disk: 20 GB per machine
+- Kubernetes version: 1.31
 
 ## Kubernetes pre-setup
 Before creating the cluster of one master and three workers be sure to edit the hosts file by adding the ip adress of all machines
@@ -35,8 +35,7 @@ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 
-**Add the network plugin**
-- For Calico:
+**Add the network plugin (Calico here)**
 
 Step 1: Install the Tigera Operator and custom resources
 ```bash
@@ -58,9 +57,58 @@ Step 4: Remove the taints on the control plane so that you can schedule pods on 
 kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 ```
 
+### On the workers node
+On these nodes you just need to join the cluster by executing:
+```bash
+kubeadm join <control-plane-IPadd/name>:<port> --token <token> --discovery-token-ca-cert-hash sha256:<hash>
+```
 
-- For Flannel (simple and lightweight to manage)
+For example
+```bash
+sudo kubeadm join 192.168.122.195:6443 --token nx1jjq.u42y27ip3bhmj8vj --discovery-token-ca-cert-hash sha256:c6de85f6c862c0d58cc3d10fd199064ff25c4021b6e88475822d6163a25b4a6c
+```
 
-  ```bash
-  kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
-  ```
+**❗️IMPORTANT**
+**OH NO I CLEAR MY TERMINAL AND NOW I DON'T EVEN COPY THE JOIN COMMAND AND THE TOKEN GENERATED AT THE INIT PHASE 😱😭**
+
+!! NO PANIC
+
+You can get a view the available token using:
+```bash
+kubeadm token list
+```
+
+If the token expired you can generate a new one:
+```bash
+sudo kubeadm token create
+```
+and got a view of it 
+```bash
+kubeadm token list
+```
+An another way to generate a new token in pair with the join command is:
+```bash
+kubeadm token create --print-join-command
+```
+
+### Removing a worker node from the cluster
+To remove a worker node from an existing cluster you have first to:
+
+**Step 1:** Migrate the pods from the node
+```bash
+kubectl drain  <node-name> --delete-local-data --ignore-daemonsets
+```
+
+**Step 2:** Prevent a node from scheduling news pods use (mark it as unschedulable)
+```bash
+kubectl cordon <node-name>
+```
+
+**Step 3:** Revert changes made to the node since the join comand
+```bash
+sudo kubeadm reset
+sudo rm -rf $HOME/.kube
+```
+
+Once the reset command has been executed successfully you can re-join the worker-node/new-node to the cluster.
+
