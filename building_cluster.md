@@ -44,7 +44,7 @@ kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.2
 
 Step 2: Install Calico by creating the necessary resources
 ```bash
-kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.2/manifests/custom-resources.yaml```
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.2/manifests/custom-resources.yaml
 ```
 
 Step 3: Confirm that all pods are running using this command (wait until each pod has the **STATUS** of **RUNNING**)
