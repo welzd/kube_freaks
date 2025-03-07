@@ -26,6 +26,7 @@ sudo chmod +x kube_prerequisities.sh
 sh kube_prerequisities.sh
 ```
 Good things are starting from here
+<br>
 
 ### On the master node
 **Create the cluster**
@@ -35,6 +36,8 @@ mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
+
+<br>
 
 **Add the network plugin (Calico here)**
 
@@ -72,10 +75,10 @@ For example
 sudo kubeadm join 192.168.122.195:6443 --token nx1jjq.u42y27ip3bhmj8vj --discovery-token-ca-cert-hash sha256:c6de85f6c862c0d58cc3d10fd199064ff25c4021b6e88475822d6163a25b4a6c
 ```
 
-####❗IMPORTANT
-<br>
-#####😱😭 OH NO I CLEAR MY TERMINAL AND NOW I DON'T EVEN COPY THE JOIN COMMAND AND THE TOKEN GENERATED AT THE INIT PHASE !
-<br>
+####IMPORTANT❗
+
+####OH NO I CLEAR MY TERMINAL AND NOW I DON'T EVEN COPY THE JOIN COMMAND AND THE TOKEN GENERATED AT THE INIT PHASE 😱😭!
+
 
 🤭 NO PANIC WE GOT YOUR BACK !!
 <br>
@@ -98,8 +101,12 @@ An another way to generate a new token in pair with the join command is:
 kubeadm token create --print-join-command
 ```
 
+<br>
+
 ### Removing a worker node from the cluster
 To remove a worker node from an existing cluster you have first to:
+
+<br>
 
 **Step 1:** Migrate the pods from the node
 ```bash
