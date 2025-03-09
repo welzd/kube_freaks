@@ -6,8 +6,8 @@ This guide is intended to help you setup quickly a Kubernetes cluster.
 - Master node: 1
 - Workers nodes: 3
 - Num of CPU: 2
-- RAM: 2GB(min) per machine
-- Disk: 20 GB per machine
+- RAM: 2GB(min) per machine - 4GB is better
+- Disk: 40 GB per master machine and at least 150 GB per worker node
 - Kubernetes version: 1.31
 
 ## Kubernetes pre-setup
