@@ -65,9 +65,7 @@ sudo containerd config default > config.toml
 sudo mv config.toml /etc/containerd/config.toml
 sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
 
-# Changing the executable path of containerd
-echo "${GREEN}[+] Indicate the executable file of containerd ${NC}"
-sudo sed -i 's/ExecStart=usr/local/bin/containerd/ExecStart=usr/bin/containerd /' /etc/systemd/system/containerd.service
+
 
 # Install the CNI plugin for containerd nertwork purpose
 echo "${GREEN}[+] Running containerd setup ${NC}"
@@ -76,6 +74,11 @@ wget https://github.com/containernetworking/plugins/releases/download/v1.1.1/cni
 mkdir -p /opt/cni/bin  
 sudo tar Cxzvf /opt/cni/bin cni-plugins-linux-amd64-v1.1.1.tgz
 sudo curl -L https://raw.githubusercontent.com/containerd/containerd/main/containerd.service -o /etc/systemd/system/containerd.service
+
+# Changing the executable path of containerd
+echo "${GREEN}[+] Writing changes to the binary of the containerd.service ${NC}"
+sudo sed -i 's/ExecStart=usr/local/bin/containerd/ ExecStart=usr/bin/containerd/' /etc/systemd/system/containerd.service
+
 sudo systemctl daemon-reload
 sudo systemctl restart containerd
 
