@@ -2,7 +2,7 @@
 
 **Prerequisities:**
 - Kubernetes v1.31 cluster with one master and at least 3 workers nodes
-- Kustomize for customize raw, template-free YAML files for multiple purposes, leaving the original YAML untouched and usable as is.
+- Kustomize for customize raw, template-free YAML files for multiple purposes, leaving the original YAML untouched and usable as it was.
 - Sufficient stockage on each worker node managed by Ceph Storage (OSD)
 - A good and speedy internet
 
@@ -31,9 +31,20 @@ Here is a match of the kubectl and kustomize versions
 | v1.26 |	v4.5.7 |
 | v1.27 |	v5.0.1 |
 
-**NOTE:** Kustomize is embedded with kubectl since the version 1.14. Be sure to check yur kubetcl version
 
-**TO-DO:** Add a section for the installation of kustomize as a standalone component
+### Install Kustomize
+This script from the official repo detect the OS and downloads the appropriate kustomize binary to your current working directory
+```
+curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"  | bash
+```
+
+<br>
+
+**Important:** Move the kustomize binary to the /usr/bin/ directory
+```bash
+sudo mv kustomize /usr/bin/
+```
+
 
 ## Initiating a Kubeflow instance (one-liner command)
 ```bash
@@ -55,7 +66,8 @@ kubectl get pods -n kubeflow
 kubectl get pods -n kubeflow-user-example-com
 ```
 
-**Port forward**
+**Port forward**  
+
 The default way of accessing Kubeflow is via port-forward.  
 
 This enables you to get started quickly without imposing any requirements on your environment.  
