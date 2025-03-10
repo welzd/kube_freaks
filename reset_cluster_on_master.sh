@@ -9,6 +9,8 @@ sudo rm -rf $HOME/.kube
 sudo systemctl daemon-reload
 sudo systemctl restart kubelet
 
+echo ""
+
 echo -e "${RED}[💪] Fresh kubernetes cluster re-init ${NC}"
 sudo kubeadm init --pod-network-cidr=192.168.0.0/16 -v 4
 mkdir -p $HOME/.kube
