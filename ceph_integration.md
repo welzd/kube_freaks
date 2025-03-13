@@ -42,4 +42,15 @@ kubectl -n rook-ceph get pod
 
 Please be patient and ensure that all are n/n READY and in RUNNING state. 
 
+### Create a pool storage
+
+Go to deploy/examples/csi/rbd/
+
+Then apply the storageclass.yaml file
+
+```bash
+kubectl create -f storageclass.yaml
+```
+
+
 **NOTE:** Next fixes will be published in this repo depending on the giving feedback
