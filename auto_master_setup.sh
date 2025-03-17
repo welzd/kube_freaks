@@ -5,7 +5,7 @@ BRIGHT_RED='\033[1;31m'
 NC='\033[0m' 
 
 echo -e "${MAGENTA}[🤖] Init the master node of the cluster ${NC}"
-sudo kubeadm init --pod-network-cidr=192.168.0.0/16 -v 4
+sudo kubeadm init -v=5 --upload-certs --control-plane-endpoint master:6443 --pod-network-cidr=192.168.0.0/16
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
