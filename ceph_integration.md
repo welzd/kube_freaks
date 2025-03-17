@@ -2,7 +2,7 @@
 
 ## Prerequisities
 - Kubernetes v1.17 or above
-- Raw devices (no partitions or formatted filesystems) ->  query lvm2 to be install on the machine
+- Raw devices (no partitions or formatted filesystems) ->  query `lvm2` to be install on the machine
 - Raw partitions (no formatted filesystem)
 - Persistent Volumes available from a storage class in block mode
 
@@ -15,7 +15,7 @@ sudo apt-get install lvm2
 ```
 
 ### The rook operator
-As documented on the Ceph Docs you can deploy the rook operator   
+As documented on the Ceph Docs you can deploy the `rook` operator   
 ```bash
 git clone --single-branch --branch v1.9.2 https://github.com/rook/rook.git
 cd deploy/examples
@@ -40,7 +40,7 @@ Get a look to the pods that will be created and wait for them to be in the runni
 kubectl -n rook-ceph get pod
 ```
 
-Please be patient and ensure that all are n/n READY and in RUNNING state. 
+Please be patient and ensure that all are n/n `READY` and in `RUNNING` state. 
 
 ### Create a pool storage
 
@@ -49,8 +49,11 @@ Go to deploy/examples/csi/rbd/
 Then apply the storageclass.yaml file
 
 ```bash
-kubectl create -f storageclass.yaml
+kubectl create -n rook-ceph -f storageclass.yaml
 ```
 
 
-**NOTE:** Next fixes will be published in this repo depending on the giving feedback
+### Clean delete of pods and rook-ceph namespace
+```bash
+kubectl -n rook-ceph delete daemonset,statefulset,service --all
+```
