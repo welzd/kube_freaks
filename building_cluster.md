@@ -41,25 +41,25 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 **Add the network plugin (Calico here)**
 
-Step 1: Install the Tigera Operator and custom resources
+**Step 1:** Install the Tigera Operator and custom resources
 ```bash
 kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.2/manifests/tigera-operator.yaml
 ```
 <br>
 
-Step 2: Install Calico by creating the necessary resources
+**Step 2:** Install Calico by creating the necessary resources
 ```bash
 kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.29.2/manifests/custom-resources.yaml
 ```
 <br>
 
-Step 3: Confirm that all pods are running using this command (wait until each pod has the **STATUS** of **RUNNING**)
+**Step 3:** Confirm that all pods are running using this command (wait until each pod has the **STATUS** of **RUNNING**)
 ```bash
 watch kubectl get pods -n calico-system
 ```
 <br>
 
-Step 4: Remove the taints on the control plane so that you can schedule pods on it
+**Step 4:** Remove the taints on the control plane so that you can schedule pods on it
 ```bash
 kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 ```
@@ -79,7 +79,7 @@ sudo kubeadm join 192.168.122.195:6443 --token nx1jjq.u42y27ip3bhmj8vj --discove
 
 #### OH NO I CLEAR MY TERMINAL AND NOW I DON'T EVEN COPY THE JOIN COMMAND AND THE TOKEN GENERATED AT THE INIT PHASE 😱😭!
 
-🤭 NO PANIC WE GOT YOUR BACK !!
+*NO PANIC WE GOT YOUR BACK !!*
 <br>
 
 You can get a view the available token using:
